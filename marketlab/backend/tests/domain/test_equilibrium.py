@@ -30,6 +30,5 @@ def test_equilibrium_subsidy():
     policy = MarketPolicy(mode="subsidy", t=10)
 
     eq = compute_equilibrium(dmd, spl, policy)
-    # subsidy should lower consumer price vs none
     assert eq.p < 26.0
     assert eq.q > 42.0

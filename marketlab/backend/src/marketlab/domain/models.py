@@ -64,7 +64,6 @@ class MarketPolicy:
         if self.t < 0:
             raise InvalidParameterError("Policy parameter 't' must be >= 0.")
         if self.mode == "none" and self.t != 0:
-            # строгая дисциплина: в режиме none t должен быть 0
             raise InvalidParameterError("For mode='none', parameter 't' must be 0.")
 
     def producer_price(self, consumer_price: float) -> float:

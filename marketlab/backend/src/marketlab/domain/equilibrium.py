@@ -1,15 +1,13 @@
 from __future__ import annotations
-
 from dataclasses import dataclass
-
 from .errors import NoEquilibriumError
 from .models import LinearDemand, LinearSupply, MarketPolicy
 
 
 @dataclass(frozen=True, slots=True)
 class Equilibrium:
-    p: float  # consumer price
-    q: float  # traded quantity
+    p: float
+    q: float
 
 
 def compute_equilibrium(
@@ -48,7 +46,6 @@ def compute_equilibrium(
 
     q = demand.quantity(p)
 
-    # Domain validity: positive equilibrium
     if p <= 0 or q <= 0:
         raise NoEquilibriumError("Equilibrium must satisfy P*>0 and Q*>0 for this task family.")
 
