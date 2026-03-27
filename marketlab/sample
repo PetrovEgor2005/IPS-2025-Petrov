@@ -1,0 +1,15 @@
+http://localhost:8000/docs
+
+
+
+#правильное решение
+{
+  "task_id": "equilibrium_linear_v1",
+  "user_code": "def solve(params):\n    a = float(params[\"a\"])\n    b = float(params[\"b\"])\n    c = float(params[\"c\"])\n    d = float(params[\"d\"])\n    mode = params[\"mode\"]\n    t = float(params.get(\"t\", 0.0))\n    denom = b + d\n    if mode == \"none\":\n        p = (a - c) / denom\n    elif mode == \"tax\":\n        p = (a - c + d * t) / denom\n    else:\n        p = (a - c - d * t) / denom\n    q = a - b * p\n    return {\"p_eq\": p, \"q_eq\": q}"
+}
+
+#неверное решение
+{
+  "task_id": "equilibrium_linear_v1",
+  "user_code": "def solve(params):\n    a = float(params[\"a\"])\n    b = float(params[\"b\"])\n    c = float(params[\"c\"])\n    d = float(params[\"d\"])\n    p = (a - c) / (b + d)\n    q = a - b * p\n    return {\"p_eq\": p, \"q_eq\": q}"
+}

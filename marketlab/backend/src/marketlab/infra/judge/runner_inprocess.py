@@ -1,44 +1,54 @@
 from __future__ import annotations
 
 import signal
+import threading
 from contextlib import contextmanager
 from types import MappingProxyType
 from typing import Any, Callable
-
-from marketlab.domain.judge.models import JudgeReport, Verdict
 
 
 class TimeoutError(Exception):
     pass
 
 
+def _is_main_thread() -> bool:
+    return threading.current_thread() is threading.main_thread()
+
+
 @contextmanager
 def time_limit(seconds: int):
-    """
-    Simple timeout using signal.alarm (works on Unix/macOS).
-    Later we will replace with subprocess/multiprocessing sandbox.
-    """
     if seconds <= 0:
         yield
         return
 
-    def handler(signum, frame):  # noqa: ARG001
-        raise TimeoutError("Time limit exceeded")
+    if _is_main_thread():
+        def handler(signum, frame):  # noqa: ARG001
+            raise TimeoutError("Time limit exceeded")
 
-    old_handler = signal.signal(signal.SIGALRM, handler)
-    signal.alarm(seconds)
-    try:
-        yield
-    finally:
-        signal.alarm(0)
-        signal.signal(signal.SIGALRM, old_handler)
+        old_handler = signal.signal(signal.SIGALRM, handler)
+        signal.alarm(seconds)
+        try:
+            yield
+        finally:
+            signal.alarm(0)
+            signal.signal(signal.SIGALRM, old_handler)
+    else:
+        timed_out = threading.Event()
+
+        def _interrupt():
+            timed_out.set()
+
+        timer = threading.Timer(seconds, _interrupt)
+        timer.start()
+        try:
+            yield
+            if timed_out.is_set():
+                raise TimeoutError("Time limit exceeded")
+        finally:
+            timer.cancel()
 
 
 def compile_user_solve(user_code: str) -> Callable[[dict[str, Any]], dict[str, float]]:
-    """
-    Executes user's code and returns solve(params)->dict function.
-    """
-    # restricted-ish globals (not a real sandbox)
     safe_builtins = {
         "abs": abs,
         "min": min,
@@ -49,7 +59,7 @@ def compile_user_solve(user_code: str) -> Callable[[dict[str, Any]], dict[str, f
         "float": float,
         "int": int,
         "str": str,
-        "print": print,  # можно убрать позже
+        "print": print,
     }
 
     globals_dict: dict[str, Any] = {"__builtins__": MappingProxyType(safe_builtins)}

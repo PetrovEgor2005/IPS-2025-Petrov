@@ -38,7 +38,7 @@ def _close_enough(a: float, b: float, abs_tol: float, rel_tol: float) -> bool:
     diff = abs(a - b)
     if diff <= abs_tol:
         return True
-    denom = max(1.0, abs(b))
+    denom = max(abs(a), abs(b), 1e-15)
     return diff / denom <= rel_tol
 
 

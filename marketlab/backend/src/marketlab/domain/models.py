@@ -48,12 +48,6 @@ class LinearSupply:
 
 @dataclass(frozen=True, slots=True)
 class MarketPolicy:
-    """
-    Policy introduces a per-unit wedge on producers:
-    - none: producer price = consumer price
-    - tax: producer price = consumer price - t
-    - subsidy: producer price = consumer price + t
-    """
 
     mode: Mode
     t: float = 0.0

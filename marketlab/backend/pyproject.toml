@@ -6,8 +6,10 @@ dependencies = [
   "fastapi>=0.110",
   "uvicorn[standard]>=0.27",
   "pydantic>=2.5",
+  "pydantic-settings>=2.1",
   "sqlalchemy>=2.0",
   "psycopg[binary]>=3.1",
+  "alembic>=1.13",
 ]
 
 [project.optional-dependencies]
@@ -25,15 +27,15 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = [
-  "E", "F",      # базовые ошибки
-  "I",           # импорты
-  "B",           # bugbear
-  "UP",          # pyupgrade
-  "ERA",         # закомментированный код
-  "FIX",         # TODO / FIXME / XXX
+  "E", "F",
+  "I",
+  "B",
+  "UP",
+  "ERA",
+  "FIX",
 ]
 ignore = [
-  "E501",        # длина строки
+  "E501",
 ]
 
 [tool.black]
