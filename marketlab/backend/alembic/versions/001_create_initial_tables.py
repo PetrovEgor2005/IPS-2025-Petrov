@@ -1,9 +1,3 @@
-"""create initial tables
-
-Revision ID: 001
-Revises:
-Create Date: 2026-02-17
-"""
 from typing import Sequence, Union
 
 from alembic import op

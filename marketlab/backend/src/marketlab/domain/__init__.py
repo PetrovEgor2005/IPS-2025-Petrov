@@ -1,18 +1,3 @@
-"""
-Domain layer for MarketLab.
-
-Contains pure economic models and rules:
-- demand and supply functions
-- market policies
-- equilibrium computation
-- domain-level errors
-
-This layer must not depend on:
-- FastAPI
-- databases
-- infrastructure code
-"""
-
 from .errors import (
     DomainError,
     InvalidParameterError,

@@ -6,14 +6,6 @@ from marketlab.domain.tasks import Params, Result
 
 
 def solve_equilibrium_linear(params: Params) -> Result:
-    """
-    Solver for task: linear equilibrium with optional per-unit tax/subsidy.
-
-    Expected input keys:
-      a, b, c, d, mode, t
-    Returns:
-      p_eq, q_eq
-    """
     a = float(params["a"])
     b = float(params["b"])
     c = float(params["c"])

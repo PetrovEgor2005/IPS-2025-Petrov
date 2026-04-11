@@ -1,18 +1,10 @@
-"""
-Pydantic schemas for the MarketLab REST API.
 
-These are *presentation-layer* objects: they define the JSON contract
-between frontend and backend.  They intentionally duplicate some
-domain types to keep the domain layer framework-free.
-"""
 
 from __future__ import annotations
 
-from datetime import datetime
+from typing import Any
 
 from pydantic import BaseModel, Field
-
-
 
 
 class FieldOut(BaseModel):
@@ -22,20 +14,18 @@ class FieldOut(BaseModel):
 
 
 class TaskShort(BaseModel):
-    """Compact representation for the task catalogue list."""
     id: str
     title: str
     topic: str
 
 
 class TaskDetail(BaseModel):
-    """Full task information shown on the solve page."""
     id: str
     title: str
     topic: str
     input_fields: list[FieldOut]
     output_fields: list[FieldOut]
-    public_test: dict  # first generated test — always visible
+    public_test: dict
 
 
 
@@ -45,21 +35,23 @@ class SubmissionIn(BaseModel):
 
 
 class SubmissionOut(BaseModel):
-    id: str | None = None
+    id: str = ""
     verdict: str
     passed: int
     total: int
     message: str = ""
     failed_test_index: int | None = None
     failed_field: str | None = None
-    created_at: datetime | None = None
+    failed_input: dict[str, Any] | None = None
+    failed_expected: dict[str, float] | None = None
+    failed_got: dict[str, float] | None = None
+    created_at: str = ""
 
 
 class SubmissionShort(BaseModel):
-    """Compact submission for history list."""
     id: str
     task_id: str
     verdict: str
     passed: int
     total: int
-    created_at: datetime
+    created_at: str = ""

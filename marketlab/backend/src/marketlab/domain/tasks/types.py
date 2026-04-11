@@ -15,9 +15,6 @@ ValueType = Literal["int", "float", "str"]
 
 @dataclass(frozen=True, slots=True)
 class FieldSpec:
-    """
-    Describes a single input/output field.
-    """
     name: str
     type: ValueType
     description: str

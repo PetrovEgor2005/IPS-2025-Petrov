@@ -10,11 +10,6 @@ Mode = Literal["none", "tax", "subsidy"]
 
 @dataclass(frozen=True, slots=True)
 class LinearDemand:
-    """
-    Qd(P) = a - bP
-    a > 0, b > 0
-    """
-
     a: float
     b: float
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, Float, Integer, String, Text, func
+from sqlalchemy import DateTime, Integer, String, Text, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -18,7 +18,6 @@ def _utcnow() -> datetime:
 
 
 class TaskRow(Base):
-
     __tablename__ = "tasks"
 
     id: Mapped[str] = mapped_column(String(120), primary_key=True)
@@ -38,8 +37,9 @@ class SubmissionRow(Base):
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
     task_id: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    user_id: Mapped[str] = mapped_column(String(36), nullable=True, index=True)
     user_code: Mapped[str] = mapped_column(Text, nullable=False)
-    verdict: Mapped[str] = mapped_column(String(10), nullable=False)  # AC|WA|RE|TLE
+    verdict: Mapped[str] = mapped_column(String(10), nullable=False)
     passed: Mapped[int] = mapped_column(Integer, nullable=False)
     total: Mapped[int] = mapped_column(Integer, nullable=False)
     message: Mapped[str] = mapped_column(Text, nullable=False, default="")

@@ -1,3 +1,9 @@
+exclude: |
+  (?x)^(
+    \.idea/.*|
+    marketlab/frontend/tsconfig\.tsbuildinfo
+  )$
+
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.6.9
@@ -13,7 +19,12 @@ repos:
     rev: v4.6.0
     hooks:
       - id: end-of-file-fixer
+        files: ^marketlab/
       - id: trailing-whitespace
+        files: ^marketlab/
       - id: check-yaml
+        files: ^marketlab/
       - id: check-toml
+        files: ^marketlab/
       - id: check-merge-conflict
+        files: ^marketlab/
