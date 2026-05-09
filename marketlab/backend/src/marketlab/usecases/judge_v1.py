@@ -66,6 +66,7 @@ def run_judge_v1(
     first_failed_input = None
     first_failed_expected = None
     first_failed_got = None
+    had_runtime_error = False
 
     for i, params in enumerate(tests):
         try:
@@ -82,6 +83,7 @@ def run_judge_v1(
                 first_failed_index = i
                 first_fail_message = f"Runtime error: {e}"
                 first_failed_input = params
+            had_runtime_error = True
             continue
 
         user_out = _validate_result(spec, user_out_raw)
@@ -115,7 +117,7 @@ def run_judge_v1(
         return JudgeReport(verdict="AC", passed=passed, total=total, message="Accepted")
 
     return JudgeReport(
-        verdict="WA",
+        verdict="RE" if had_runtime_error else "WA",
         passed=passed,
         total=total,
         message=first_fail_message,

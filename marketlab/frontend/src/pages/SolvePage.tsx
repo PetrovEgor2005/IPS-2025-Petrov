@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Play, RotateCcw, Lightbulb } from "lucide-react";
-import Editor from "@monaco-editor/react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ReferenceDot, ReferenceLine
@@ -414,7 +413,6 @@ export default function SolvePage() {
   const [loading, setLoading] = useState(false);
   const [failMessage, setFailMessage] = useState("");
   const [failTestIndex, setFailTestIndex] = useState<number | null>(null);
-  const [failField, setFailField] = useState<string | null>(null);
   const [failInput, setFailInput] = useState<Record<string, any> | null>(null);
   const [failExpected, setFailExpected] = useState<Record<string, number> | null>(null);
   const [failGot, setFailGot] = useState<Record<string, number> | null>(null);
@@ -435,7 +433,6 @@ export default function SolvePage() {
     setVerdict(null);
     setFailMessage("");
     setFailTestIndex(null);
-    setFailField(null);
     setFailInput(null);
     setFailExpected(null);
     setFailGot(null);
@@ -468,7 +465,6 @@ export default function SolvePage() {
         setTotal(data.total);
         setFailMessage(data.message || "");
         setFailTestIndex(data.failed_test_index ?? null);
-        setFailField(data.failed_field ?? null);
         setFailInput(data.failed_input ?? null);
         setFailExpected(data.failed_expected ?? null);
         setFailGot(data.failed_got ?? null);
@@ -486,7 +482,6 @@ export default function SolvePage() {
     setVerdict(null);
     setFailMessage("");
     setFailTestIndex(null);
-    setFailField(null);
     setFailInput(null);
     setFailExpected(null);
     setFailGot(null);
@@ -634,8 +629,8 @@ export default function SolvePage() {
               <XAxis dataKey="price" label={{ value: "Цена (P)", position: "insideBottom", offset: -5 }} tick={{ fontSize: 12 }} />
               <YAxis label={{ value: "Количество (Q)", angle: -90, position: "insideLeft", offset: 10 }} tick={{ fontSize: 12 }} />
               <Tooltip
-                  formatter={(value: number, name: string) => [
-                    value.toFixed(1),
+                  formatter={(value, name) => [
+                    typeof value === "number" ? value.toFixed(1) : String(value ?? ""),
                     name === "demand" ? "Спрос" : "Предложение",
                   ]}
                   labelFormatter={(label) => "P = " + label}
@@ -665,8 +660,8 @@ export default function SolvePage() {
             <XAxis dataKey="price" label={{ value: "Цена (P)", position: "insideBottom", offset: -5 }} tick={{ fontSize: 12 }} />
             <YAxis label={{ value: "Количество (Q)", angle: -90, position: "insideLeft", offset: 10 }} tick={{ fontSize: 12 }} />
             <Tooltip
-                formatter={(value: number, name: string) => [
-                  value.toFixed(1),
+                formatter={(value, name) => [
+                  typeof value === "number" ? value.toFixed(1) : String(value ?? ""),
                   name === "demand" ? "Спрос" : "Предложение",
                 ]}
                 labelFormatter={(label) => "P = " + label}
@@ -787,20 +782,11 @@ export default function SolvePage() {
               <div className="px-4 py-3 border-b border-gray-200">
                 <span className="text-sm font-medium text-gray-700">Ваше решение (Python)</span>
               </div>
-              <Editor
-                  height="350px"
-                  defaultLanguage="python"
+              <textarea
                   value={code}
-                  onChange={(val) => setCode(val || "")}
-                  theme="vs-light"
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 14,
-                    scrollBeyondLastLine: false,
-                    lineNumbers: "on",
-                    renderLineHighlight: "none",
-                    padding: { top: 12 },
-                  }}
+                  onChange={(e) => setCode(e.target.value)}
+                  spellCheck={false}
+                  className="h-[350px] w-full resize-none rounded-b-xl border-0 bg-gray-950 px-4 py-3 font-mono text-sm leading-6 text-gray-100 outline-none"
               />
             </div>
 

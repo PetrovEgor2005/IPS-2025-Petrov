@@ -10,7 +10,7 @@ from marketlab.infra.db.repos.submission_repo import SubmissionRepo
 from marketlab.infra.db.session import get_db
 from marketlab.usecases.registry import TASK_REGISTRY
 from marketlab.usecases.submit_solution import SubmitSolutionInput, submit_solution
-from marketlab.api.deps import get_current_user
+from marketlab.api.deps import get_current_user, get_current_user_optional
 
 router = APIRouter(prefix="/api/v1/submissions", tags=["submissions"])
 
@@ -21,7 +21,7 @@ HIDDEN_TESTS_COUNT = 25
 def create_submission(
     body: SubmissionIn,
     db: Session = Depends(get_db),
-    current_user: UserRow = Depends(get_current_user),
+    current_user: UserRow | None = Depends(get_current_user_optional),
 ):
     if body.task_id not in TASK_REGISTRY:
         raise HTTPException(status_code=404, detail=f"Task not found")
@@ -38,7 +38,7 @@ def create_submission(
 
     row = SubmissionRow(
         task_id=body.task_id,
-        user_id=current_user.id,
+        user_id=current_user.id if current_user else None,
         user_code=body.user_code,
         verdict=report.verdict,
         passed=report.passed,
@@ -68,13 +68,19 @@ def create_submission(
 def list_submissions(
     task_id: str | None = None,
     db: Session = Depends(get_db),
-    current_user: UserRow = Depends(get_current_user),
+    current_user: UserRow | None = Depends(get_current_user_optional),
 ):
     repo = SubmissionRepo(db)
-    if task_id:
-        rows = repo.list_by_task_and_user(task_id, current_user.id)
+    if current_user is not None:
+        if task_id:
+            rows = repo.list_by_task_and_user(task_id, current_user.id)
+        else:
+            rows = repo.list_by_user(current_user.id)
     else:
-        rows = repo.list_by_user(current_user.id)
+        if task_id:
+            rows = repo.list_by_task(task_id)
+        else:
+            rows = repo.list_recent()
     return [
         SubmissionShort(
             id=r.id,

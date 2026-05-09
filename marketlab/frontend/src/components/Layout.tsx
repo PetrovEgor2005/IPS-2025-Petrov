@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { HelpCircle, User, LogOut } from "lucide-react";
+import { HelpCircle, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export default function Layout() {
