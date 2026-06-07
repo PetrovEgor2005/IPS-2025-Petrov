@@ -1,3 +1,6 @@
+// Страница регистрации. Почти то же что вход, только email должен быть свободен
+// и пароль вводится дважды для проверки. После успеха — сразу логиним и кидаем на список задач.
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -13,6 +16,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
 
+    // первые две проверки делаем на фронте чтобы не дёргать бекенд по пустякам
     if (password !== passwordConfirm) {
       setError("Пароли не совпадают");
       return;
@@ -33,12 +37,14 @@ export default function RegisterPage() {
       });
 
       if (!res.ok) {
+        // самая частая ошибка — email уже занят (бекенд вернёт 409)
         const data = await res.json();
         setError(data.detail || "Ошибка регистрации");
         setLoading(false);
         return;
       }
 
+      // бекенд при регистрации сразу выдаёт токен — не надо отдельно логиниться
       const data = await res.json();
       localStorage.setItem("token", data.token);
       localStorage.setItem("userEmail", data.email);

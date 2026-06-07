@@ -1,6 +1,6 @@
-"""Integration tests for tasks & submissions API with database persistence.
+"""Интеграционные тесты API задач и сабмитов с проверкой персистентности.
 
-Uses SQLite in-memory so tests run without Postgres.
+SQLite in-memory — чтобы тесты гонялись без Postgres.
 """
 
 import pytest
@@ -12,8 +12,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from marketlab.api.routes.health import router as health_router
-from marketlab.api.routes.tasks import router as tasks_router
 from marketlab.api.routes.submissions import router as submissions_router
+from marketlab.api.routes.tasks import router as tasks_router
 from marketlab.infra.db.models import Base
 from marketlab.infra.db.session import get_db
 
@@ -39,7 +39,7 @@ def solve(params):
     return {"p_eq": 0.0, "q_eq": 0.0}
 """
 
-# ---------- Test DB setup (SQLite in-memory, single shared connection) ----------
+# ---------- Настройка тестовой БД (SQLite in-memory, один общий коннект) ----------
 
 test_engine = create_engine(
     "sqlite://",
@@ -58,7 +58,7 @@ def override_get_db():
 
 
 def _create_test_app() -> FastAPI:
-    """Create app WITHOUT lifespan (no Postgres connection needed in tests)."""
+    """Создать приложение без lifespan — Postgres в тестах не нужен."""
     app = FastAPI(title="MarketLab API Test")
     app.add_middleware(
         CORSMiddleware,
@@ -75,7 +75,7 @@ def _create_test_app() -> FastAPI:
 
 @pytest.fixture(autouse=True)
 def setup_db():
-    """Create all tables before each test, drop after."""
+    """Создаём таблицы перед тестом, удаляем после."""
     Base.metadata.create_all(bind=test_engine)
     yield
     Base.metadata.drop_all(bind=test_engine)
@@ -86,7 +86,8 @@ def client():
     return TestClient(_create_test_app())
 
 
-# ---------- Task tests ----------
+# ---------- Тесты задач ----------
+
 
 class TestTasksAPI:
     def test_list_tasks(self, client):
@@ -111,7 +112,8 @@ class TestTasksAPI:
         assert resp.status_code == 404
 
 
-# ---------- Submission tests ----------
+# ---------- Тесты сабмитов ----------
+
 
 class TestSubmissionsAPI:
     def test_submit_good_code(self, client):
@@ -150,7 +152,8 @@ class TestSubmissionsAPI:
         assert resp.status_code == 422
 
 
-# ---------- Submission history ----------
+# ---------- История сабмитов ----------
+
 
 class TestSubmissionHistory:
     def test_history_empty(self, client):

@@ -1,7 +1,12 @@
-from datetime import datetime, timedelta, timezone
+"""
+В данном фрагменте кода происходит создание токена, который будет выступать "представителем" пользователя после 
+авторизации в течение 24 часов, при посылка будет подтягиваться именно он
+"""
 
+
+
+from datetime import UTC, datetime, timedelta
 from jose import JWTError, jwt
-
 from marketlab.infra.settings import settings
 
 ALGORITHM = "HS256"
@@ -9,7 +14,7 @@ TOKEN_EXPIRE_HOURS = 24
 
 
 def create_access_token(user_id: str) -> str:
-    expire = datetime.now(timezone.utc) + timedelta(hours=TOKEN_EXPIRE_HOURS)
+    expire = datetime.now(UTC) + timedelta(hours=TOKEN_EXPIRE_HOURS)
     payload = {
         "sub": user_id,
         "exp": expire,

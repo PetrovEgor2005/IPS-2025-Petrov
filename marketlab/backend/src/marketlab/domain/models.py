@@ -1,12 +1,16 @@
-from __future__ import annotations
+"""
+В данном файле определяются модели для функции спроса, функции предложения и рыночной политики.
+- LinearDemand: Модель линейной функции спроса, Qd(P) = a - bP, где a > 0 и b > 0.
+- LinearSupply: Модель линейной функции предложения, Qs(P) = c + dP, где d > 0.
+- MarketPolicy: Модель рыночной политики, которая может быть налогом, субсидией или отсутствием вмешательства.
+Все они в дальнейшем используются для расчёта равновесия, в солвере и генераторе тестов
+"""
 
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
-
 from .errors import InvalidParameterError
-
 Mode = Literal["none", "tax", "subsidy"]
-
 
 @dataclass(frozen=True, slots=True)
 class LinearDemand:
@@ -25,11 +29,6 @@ class LinearDemand:
 
 @dataclass(frozen=True, slots=True)
 class LinearSupply:
-    """
-    Qs(P) = c + dP
-    d > 0 (c may be negative)
-    """
-
     c: float
     d: float
 
@@ -43,7 +42,6 @@ class LinearSupply:
 
 @dataclass(frozen=True, slots=True)
 class MarketPolicy:
-
     mode: Mode
     t: float = 0.0
 
@@ -60,5 +58,4 @@ class MarketPolicy:
             return consumer_price
         if self.mode == "tax":
             return consumer_price - self.t
-        # subsidy
         return consumer_price + self.t

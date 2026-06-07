@@ -1,12 +1,7 @@
-.PHONY: fmt lint test check
-
-fmt:
-	cd backend && ruff format .
-
-lint:
-	cd backend && ruff check --fix .
+.PHONY: test lint
 
 test:
 	cd backend && pytest -q
 
-check: lint fmt test
+lint:
+	cd backend && ruff check .

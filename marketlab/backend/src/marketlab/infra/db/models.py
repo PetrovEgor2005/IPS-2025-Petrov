@@ -1,10 +1,11 @@
+"""
+В данном блоке кода содержится описание базз данных через подхож ORM
+"""
 
 
 from __future__ import annotations
-
 import uuid
-from datetime import datetime, timezone
-
+from datetime import UTC, datetime
 from sqlalchemy import DateTime, Integer, String, Text, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -14,9 +15,9 @@ class Base(DeclarativeBase):
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
-
+#копия каталога задач
 class TaskRow(Base):
     __tablename__ = "tasks"
 
@@ -29,13 +30,11 @@ class TaskRow(Base):
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
 
-
+#нужна для сохранения посылок с вердиктами по пользователям
 class SubmissionRow(Base):
     __tablename__ = "submissions"
 
-    id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
-    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     task_id: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
     user_id: Mapped[str] = mapped_column(String(36), nullable=True, index=True)
     user_code: Mapped[str] = mapped_column(Text, nullable=False)
@@ -47,13 +46,11 @@ class SubmissionRow(Base):
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
 
-
+#таблица с данным о пользователях
 class UserRow(Base):
     __tablename__ = "users"
 
-    id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
-    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(256), nullable=False)
     created_at: Mapped[datetime] = mapped_column(

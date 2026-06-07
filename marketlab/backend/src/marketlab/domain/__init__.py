@@ -1,3 +1,7 @@
+from .equilibrium import (
+    Equilibrium,
+    compute_equilibrium,
+)
 from .errors import (
     DomainError,
     InvalidParameterError,
@@ -8,21 +12,17 @@ from .models import (
     LinearSupply,
     MarketPolicy,
 )
-from .equilibrium import (
-    Equilibrium,
-    compute_equilibrium,
-)
 
 __all__ = [
-    # errors
+    # ошибки
     "DomainError",
     "InvalidParameterError",
     "NoEquilibriumError",
-    # models
+    # модели
     "LinearDemand",
     "LinearSupply",
     "MarketPolicy",
-    # services
+    # сервисы
     "Equilibrium",
     "compute_equilibrium",
 ]

@@ -17,6 +17,9 @@ class TestGeneratorEquilibrium:
         tests = generate_tests(self.TASK_ID, n=5, seed=0)
         first = tests[0]
         assert first["a"] == 120.0
+        assert first["b"] == 3.0
+        assert first["c"] == -10.0
+        assert first["d"] == 2.0
         assert first["mode"] == "tax"
         assert first["t"] == 10.0
 

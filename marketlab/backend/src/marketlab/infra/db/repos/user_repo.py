@@ -1,6 +1,11 @@
+"""
+Данный класс выступает посредником между тем, как пишутся обращения к таблице в стиле питона 
+на язык SQL
+"""
+
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
 from marketlab.infra.db.models import UserRow
 
 

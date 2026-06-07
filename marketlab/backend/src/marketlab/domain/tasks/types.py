@@ -7,11 +7,16 @@ TaskTopic = Literal[
     "equilibrium",
     "taxes_subsidies",
     "welfare",
+    "elasticity",
     "aggregation",
     "inverse",
+    "monopoly",
+    "trade",
+    "externality",
 ]
 
 ValueType = Literal["int", "float", "str"]
+
 
 @dataclass(frozen=True, slots=True)
 class FieldSpec:

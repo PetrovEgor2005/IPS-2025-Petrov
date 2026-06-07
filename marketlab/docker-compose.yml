@@ -1,3 +1,6 @@
+# Локальный compose для разработки. Поднимает БД и бекенд с автоперезагрузкой.
+# Фронт запускается отдельно через "npm run dev" — так удобнее ловить горячую перезагрузку.
+
 services:
   db:
     image: postgres:16-alpine
@@ -8,6 +11,7 @@ services:
       - "5432:5432"
     volumes:
       - marketlab_db_data:/var/lib/postgresql/data
+    # healthcheck — чтобы бекенд не стартовал, пока БД не готова принимать подключения
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
@@ -26,8 +30,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    # монтируем код в контейнер — изменения подхватываются на лету без пересборки
     volumes:
       - ./backend:/app
+    # --reload перезапускает сервер при изменении файлов (только для разработки)
+    command: ["uvicorn", "marketlab.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
+# отдельный том для данных БД — переживает рестарты и пересборки
 volumes:
   marketlab_db_data:

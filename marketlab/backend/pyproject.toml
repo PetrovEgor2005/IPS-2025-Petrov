@@ -9,16 +9,18 @@ dependencies = [
   "pydantic-settings>=2.1",
   "sqlalchemy>=2.0",
   "psycopg[binary]>=3.1",
-  "alembic>=1.13",
+  "python-jose[cryptography]>=3.3",
+  "passlib[bcrypt]>=1.7",
+  "bcrypt<4.1",
+  "email-validator>=2.0",
+  "slowapi>=0.1.9",
 ]
 
 [project.optional-dependencies]
 dev = [
   "pytest>=8.0",
   "ruff>=0.6",
-  "black>=24.0",
   "httpx>=0.27",
-  "pre-commit>=3.7",
 ]
 
 [tool.ruff]
@@ -26,21 +28,8 @@ line-length = 100
 target-version = "py312"
 
 [tool.ruff.lint]
-select = [
-  "E", "F",
-  "I",
-  "B",
-  "UP",
-  "ERA",
-  "FIX",
-]
-ignore = [
-  "E501",
-]
-
-[tool.black]
-line-length = 100
-target-version = ["py312"]
+select = ["E", "F"]
+ignore = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

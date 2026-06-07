@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+
 from marketlab.api.main import create_app
 
 

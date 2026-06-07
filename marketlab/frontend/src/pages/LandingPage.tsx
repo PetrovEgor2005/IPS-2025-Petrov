@@ -1,3 +1,6 @@
+// Главная страница — рекламно-приветственная. Логики тут нет, только разметка.
+// Иконки берутся из lucide-react.
+
 import { Link } from "react-router-dom";
 import { Sparkles, Code2, CheckCircle2, BarChart3, Globe2, BookOpen } from "lucide-react";
 

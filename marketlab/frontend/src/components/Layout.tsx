@@ -1,5 +1,8 @@
+// Шапка сайта + контейнер для страниц. Тут логотип, ссылки, и кнопка войти/выйти.
+// Внутри Outlet — это место, куда React Router подставит текущую страницу.
+
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { HelpCircle, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export default function Layout() {
@@ -7,10 +10,23 @@ export default function Layout() {
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
+  // обновляем email из локального хранилища при смене страницы (после логина/регистрации)
   useEffect(() => {
     setUserEmail(localStorage.getItem("userEmail"));
   }, [location]);
 
+  // если пользователь зашёл/вышел в другой вкладке — синхронизируем эту тоже
+  useEffect(() => {
+    function onStorage(e: StorageEvent) {
+      if (e.key === "userEmail" || e.key === "token" || e.key === null) {
+        setUserEmail(localStorage.getItem("userEmail"));
+      }
+    }
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  // при выходе вычищаем всё что сохранили и кидаем на главную
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("userEmail");
@@ -34,9 +50,6 @@ export default function Layout() {
           <nav className="flex items-center gap-8">
             <Link to="/" className={isActive("/")}>Главная</Link>
             <Link to="/tasks" className={isActive("/tasks")}>Задачи</Link>
-            <button className="text-gray-400 hover:text-gray-600">
-              <HelpCircle size={20} />
-            </button>
 
             {userEmail ? (
               <div className="flex items-center gap-3">

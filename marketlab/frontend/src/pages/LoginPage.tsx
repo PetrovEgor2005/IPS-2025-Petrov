@@ -1,3 +1,6 @@
+// Страница входа. Шлём email+пароль на бекенд, получаем токен, сохраняем в браузере
+// и кидаем пользователя на список задач.
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -9,7 +12,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+    e.preventDefault();  // не даём странице перезагрузиться при submit формы
     setError("");
     setLoading(true);
 
@@ -27,6 +30,7 @@ export default function LoginPage() {
         return;
       }
 
+      // токен и email сохраняем в браузере, чтобы при следующих запросах автоматически подцеплять
       const data = await res.json();
       localStorage.setItem("token", data.token);
       localStorage.setItem("userEmail", data.email);

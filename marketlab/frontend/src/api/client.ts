@@ -1,5 +1,9 @@
+// Тут собраны обёртки над fetch — все обращения к бекенду идут через эти функции.
+// authHeaders сама подтягивает токен из localStorage и кладёт в заголовок.
+
 const API_BASE = "/api/v1";
 
+// если пользователь залогинен — добавляем токен, иначе заголовок пустой (запрос пойдёт от анонима)
 function authHeaders(): Record<string, string> {
   const token = localStorage.getItem("token");
   if (token) {

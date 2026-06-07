@@ -1,0 +1,66 @@
+# Боевой compose для прода. Четыре контейнера: БД, бекенд, nginx и certbot, 
+# Бекенд не светит порт наружу — только nginx видит мир. БД тоже изолирована во внутренней сети
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: marketlab_db
+    restart: always   # сам поднимется после рестарта сервера
+    env_file:
+      - .env.prod
+    volumes:
+      - marketlab_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: marketlab_backend
+    restart: always
+    env_file:
+      - .env.prod
+    depends_on:
+      db:
+        condition: service_healthy
+    # expose, а не ports — порт виден только другим контейнерам, наружу не выставлен
+    expose:
+      - "8000"
+
+  nginx:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: marketlab_nginx
+    restart: always
+    ports:
+      - "80:80"     # http (для редиректа на https и для certbot)
+      - "443:443"   # https
+    depends_on:
+      - backend
+    volumes:
+      # шаблон конфига — bootstrap при первой выдаче сертификата, потом prod
+      - ${NGINX_CONF_FILE:-./frontend/nginx.prod.conf}:/etc/nginx/templates/default.conf.template:ro
+      # сертификаты и файлы для acme-челленджа — общие с certbot
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    environment:
+      - DOMAIN=${DOMAIN}   # nginx подставит домен в шаблон конфига через envsubst
+
+  # certbot в фоне раз в 12 часов пробует обновить сертификат
+  # (Let's Encrypt выдаёт на 90 дней, обновляется автоматически до истечения)
+  certbot:
+    image: certbot/certbot:latest
+    container_name: marketlab_certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot --webroot-path=/var/www/certbot --quiet; sleep 12h & wait $${!}; done;'"
+
+# именованный том для данных БД — переживает пересборки и рестарты
+volumes:
+  marketlab_db_data:

@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from marketlab.domain.tasks import Params, Result
 
 

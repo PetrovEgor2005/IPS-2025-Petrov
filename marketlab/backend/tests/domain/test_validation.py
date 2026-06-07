@@ -1,7 +1,7 @@
 import pytest
 
-from marketlab.domain.errors import InvalidParameterError, NoEquilibriumError
 from marketlab.domain.equilibrium import compute_equilibrium
+from marketlab.domain.errors import InvalidParameterError, NoEquilibriumError
 from marketlab.domain.models import LinearDemand, LinearSupply, MarketPolicy
 
 

@@ -1,9 +1,9 @@
-# IDE
+
 .idea/
 .vscode/
 frontend/tsconfig.tsbuildinfo
 
-# Python
+
 __pycache__/
 *.pyc
 *.pyo
@@ -11,13 +11,12 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 
-# Env
+
 .env
 .venv/
 venv/
 
-# OS
 .DS_Store
-
-# Docker volumes / local artifacts
 *.log
+
+.claude/

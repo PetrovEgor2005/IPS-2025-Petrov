@@ -1,3 +1,9 @@
+
+"""
+Данный солвер предназначен для решения задачи с потерей благосостояния,
+основным моментом является сравнение общего благосостояния до и после введения налога или субсидии.
+"""
+
 from __future__ import annotations
 from marketlab.domain.tasks import Params, Result
 
@@ -9,6 +15,10 @@ def solve_dwl(params: Params) -> Result:
     d = float(params["d"])
     t = float(params["t"])
     mode = params["mode"]
+    if t <= 0:
+        raise ValueError("t must be positive")
+    if mode not in ("tax", "subsidy"):
+        raise ValueError("mode must be 'tax' or 'subsidy'")
     denom = b + d
     p0 = (a - c) / denom
     q0 = a - b * p0
@@ -28,13 +38,11 @@ def solve_dwl(params: Params) -> Result:
     cs_after = 0.5 * (p_max_demand - p_buyer) * q_new
     ps_after = 0.5 * (p_seller - p_min_supply) * q_new
     if mode == "tax":
-        gov_revenue = t * q_new
-        gov_cost = 0.0
+        gov_balance = t * q_new
     else:
-        gov_revenue = 0.0
-        gov_cost = t * q_new
+        gov_balance = -t * q_new
 
-    total_after = cs_after + ps_after + gov_revenue - gov_cost
+    total_after = cs_after + ps_after + gov_balance
     dwl = total_before - total_after
     buyer_burden = abs(p_buyer - p0)
     seller_burden = abs(p0 - p_seller)
@@ -47,7 +55,7 @@ def solve_dwl(params: Params) -> Result:
         "q_new": q_new,
         "cs_after": cs_after,
         "ps_after": ps_after,
-        "gov_revenue": gov_revenue,
+        "gov_balance": gov_balance,
         "dwl": dwl,
         "buyer_share": buyer_share,
         "seller_share": seller_share,
