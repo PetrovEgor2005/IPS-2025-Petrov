@@ -74,15 +74,15 @@ MarketLab проверяет иначе. Тебе нужно написать **
 
 | Каталог задач | Страница задачи |
 |---|---|
-| ![Каталог](docs/screenshots/01-catalog.png) | ![Задача](docs/screenshots/02-task.png) |
+| ![Каталог](marketlab/docs/screenshots/01-catalog.png) | ![Задача](marketlab/docs/screenshots/02-task.png) |
 
 | График спроса и предложения | Разбор неверного ответа |
 |---|---|
-| ![График](docs/screenshots/03-chart.png) | ![WA](docs/screenshots/04-wa.png) |
+| ![График](marketlab/docs/screenshots/03-chart.png) | ![WA](marketlab/docs/screenshots/04-wa.png) |
 
 | Принятое решение |
 |---|
-| ![AC](docs/screenshots/05-ac.png) |
+| ![AC](marketlab/docs/screenshots/05-ac.png) |
 
 ---
 
